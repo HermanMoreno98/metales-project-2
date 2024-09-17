@@ -717,7 +717,7 @@ function updateSelectOptions(selectId, options) {
     selectElement.appendChild(defaultOption);
 
     // Ordenar opciones alfabéticamente
-    options.sort((a, b) => a.localeCompare(b));
+    // options.sort((a, b) => a.localeCompare(b));
 
     // Crear y añadir las nuevas opciones al select
     options.forEach(option => {
