@@ -650,6 +650,9 @@ L.control.layers(
         "Captacion <img src='https://cdn-icons-png.flaticon.com/512/5371/5371132.png' width='20' height='20'>": captacion,
         "PTAP <img src='https://cdn-icons-png.flaticon.com/512/8846/8846576.png' width='20' height='20'>": ptap,
         "PTAR <img src='https://cdn-icons-png.flaticon.com/512/10708/10708424.png' width='20' height='20'>": ptar,
+        "CCPP Rural <img src='https://cdn-icons-png.flaticon.com/512/44/44909.png' width='20' height='20'>": category1Layer,
+        "CCPP Pequeña Ciudad <img src='https://cdn-icons-png.flaticon.com/512/565/565665.png' width='20' height='20'>": category2Layer,
+        "CCPP Pequeña Ciudad Tipo 2 <img src='https://cdn-icons-png.flaticon.com/512/4274/4274096.png' width='20' height='20'>": category3Layer,
         "Sectores Operacionales <hr><strong>Hidrografía:</strong>": sectores, 
         "Rios <img src='https://www.kingtony.com/upload/products/87D11-071A-B_v.jpg' width='20' height='20'>": rios,
         "Cuencas transfronterizas":cuencas_transfronterizas,
@@ -661,10 +664,7 @@ L.control.layers(
         "Salud <img src='https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg' width='20' height='20'>":salud,
         "Pasivos Mineros <img src='https://cdn-icons-png.flaticon.com/512/2547/2547847.png' width='20' height='20'><hr><strong>Metales pesados:</strong><br><hr><strong>INGEMENT</strong><br>":pasivos_mineros,
         "Arsénico (Más de 100 LMP) - INGEMMET <img src='https://cdn-icons-png.flaticon.com/512/8336/8336930.png' width='20' height='20'>":prospeccion_as,"Arsénico (Hasta 100 veces LMP) - INGEMMET<img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'><hr><strong>ANA</strong><br>":prospeccion_as_hasta100,
-        "Arsénico (Hasta 100 veces LMP) - ANA <img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'>":monitoreo_ana,
-        "CCPP Rural <img src='https://cdn-icons-png.flaticon.com/512/44/44909.png' width='20' height='20'>": category1Layer,
-        "CCPP Pequeña Ciudad <img src='https://cdn-icons-png.flaticon.com/512/565/565665.png' width='20' height='20'>": category2Layer,
-        "CCPP Pequeña Ciudad Tipo 2 <img src='https://cdn-icons-png.flaticon.com/512/4274/4274096.png' width='20' height='20'>": category3Layer
+        "Arsénico (Hasta 100 veces LMP) - ANA <img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'>":monitoreo_ana
         
     }
 ).addTo(map);
