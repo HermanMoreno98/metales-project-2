@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infraestructura EPS</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="title">
+            <h1>Avances de información territorial integral orientada a las mejoras en la prestación de los servicios de agua potable y saneamiento</h1>
+        </div>
+        <div class="btn-burger" id="btn">
+            <i class='bx bx-menu'></i>
+        </div>
+    </header>
+    <main>
+        <aside class="sidebar" id="sidebar">
+            <div class="select-header" id="icon-despliegue">
+                <h2>Menú de filtros</h2>
+                <i class='bx bx-chevron-left' ></i>
+            </div>
+            <ul id="list-selects">
+                <div class="sidebar-menu-item">
+                    <label for="departamento">Selecciona un departamento:</label>
+                    <select id="departamento" class="select-input">
+                        <option value="">Seleccionar todos los departamentos</option>
+                    </select>
+                </div>
+                <div class="sidebar-menu-item">
+                    <label for="eps">Selecciona una EPS:</label>
+                    <select id="eps" class="select-input">
+                        <option value="">Seleccione una EPS</option>
+                    </select>
+                </div>
+                
+                <div class="sidebar-menu-item">
+                    <label for="localidad">Selecciona una Localidad:</label>
+                    <select id="localidad" class="select-input">
+                        <option value="">Seleccione una Localidad</option>
+                    </select>
+                </div>
+                
+                <div class="sidebar-menu-item">
+                    <label for="ccpp">Selecciona un Centro Poblado:</label>
+                    <select id="ccpp" class="select-input">
+                        <option value="">Seleccione un Centro Poblado</option>
+                    </select>
+                </div>
+                
+                <div class="sidebar-menu-item">
+                    <label for="reservorio">Selecciona un Reservorio:</label>
+                    <select id="reservorio" class="select-input">
+                        <option value="">Seleccione un Reservorio</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+                    <button id="reset_filters" class="action-button">Quitar filtro</button>
+                </div>
+            </ul>
+        </aside>
+        <div class="content">
+            <div class="map">
+                <div id="map" class="leaflet-map"></div>
+            </div>
+
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
