@@ -24,10 +24,23 @@ var distrito = L.layerGroup();
 var reservorio = L.layerGroup();
 var captacion = L.layerGroup();
 var ptap = L.layerGroup();
+var ptar = L.layerGroup();
+var eps = L.layerGroup();
 var rios = L.layerGroup();
 var sectores = L.layerGroup();
 var rios = L.layerGroup();
 var ana_uh = L.layerGroup();
+var cuencas_aporte = L.layerGroup();
+var ana_acuiferos = L.layerGroup();
+var cuencas_transfronterizas = L.layerGroup();
+var canales = L.layerGroup();
+var pasivos_mineros = L.layerGroup();
+var prospeccion_as = L.layerGroup();
+var prospeccion_as_hasta100 = L.layerGroup();
+var monitoreo_ana = L.layerGroup();
+var salud = L.layerGroup();
+var Ana_pozos_ua = L.layerGroup();
+var Ana_pozos_una = L.layerGroup();
 
 function addGeoJSONLayer(url, objectName, styleOptions, labelProperty, layer, selectedDept, applyFilter = false, labelPrueba = null, tooltipProperty = null) {
     fetch(url)
@@ -91,6 +104,79 @@ function addGeoJSONLayer(url, objectName, styleOptions, labelProperty, layer, se
         });
 }
 
+function addMarkersToMap(url,layer, objectName, icon, popupContent = null, selectedDept = null, deptField = 'nomdep',additionalFilter = null) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            layer.clearLayers(); // Limpiar capas anteriores
+            
+            let geojsonData;
+
+            // Verificar si es TopoJSON
+            if (data.type === 'Topology' && data.objects && Object.keys(data.objects).length > 0) {
+                // Convertir TopoJSON a GeoJSON
+                geojsonData = topojson.feature(data, data.objects[objectName]);
+
+            } else {
+                // Asumir que es GeoJSON
+                geojsonData = data;
+            }  
+            
+            geojsonData.features.forEach(function (feature) {
+
+                let coordinates = feature.geometry.coordinates;
+                let lng = coordinates[0]; // Longitud
+                let lat = coordinates[1]; // Latitud
+
+                // Verificar si la feature tiene propiedades (atributos)
+                let properties = feature.properties || {};
+
+                if (selectedDept && feature.properties[deptField] !== selectedDept) {
+                    return; // Si el departamento no coincide, saltar este marcador
+                }
+
+                 // Aplicar el filtro adicional si se proporciona
+                if (additionalFilter && !additionalFilter(properties)) {
+                    return; // Si el filtro adicional no se cumple, omitir este marcador
+                }
+
+
+                if (lat && lng) {
+   
+                    // var marker = L.marker([parseFloat(feature.X), parseFloat(feature.Y)], { icon: icon });
+                    var marker = L.marker([lat, lng], { icon: icon });
+
+
+                    // Verificar si se debe mostrar el contenido del popup
+                    if (popupContent) {
+                        var popupHtml = `
+                            <table class='popup-table'>
+                                ${popupContent(feature.properties)}
+                            </table>
+                        `;
+                        marker.bindPopup(popupHtml);
+                    }
+    
+                    // Añadir el marcador al grupo
+                    marker.addTo(layer);
+    
+                    geojsonLayers[objectName] = marker;
+                }
+
+            });  
+            
+        })
+        .catch(error => {
+            console.error('Error fetching or parsing GeoJSON data:', error);
+        });
+}
+
+
 
 function addCombinedGeoJSONLayers(url1, url2, layer, styleOptions,o1,o2,selectedDept,labelProperty) {
     // Obtener y combinar datos de las dos URLs
@@ -150,34 +236,52 @@ function toggleGeoJSONLayer(layer) {
     }
 }
 
-// // Llamar a la función para agregar las capas GeoJSON con estilos personalizados
-// var layerStyles = {
-//     geojsonLayer: {
-//         color: "black",
-//         weight: 3,
-//         opacity: 1,
-//         fillOpacity: 0
-//     },
-//     geojsonLayerProv: {
-//         color: "black",
-//         weight: 2,
-//         opacity: 1,
-//         fillOpacity: 0
-//     },
-//     geojsonLayerDist: {
-//         color: "black",
-//         weight: 1,
-//         opacity: 1,
-//         fillOpacity: 0,
-//         dashArray: "5, 5"
-//     },
-//     geojsonSectores: {
-//         color: "red",
-//         weight: 2,
-//         opacity: 1,
-//         fillOpacity: 0.5
-//     }
-// };
+// Iconos
+var capta_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/5371/5371132.png',
+    iconSize: [20, 20]
+});
+var res_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/1843/1843893.png',
+    iconSize: [20, 20]
+});
+var ptar_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/10708/10708424.png',
+    iconSize: [20, 20]
+});
+var ptap_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/8846/8846576.png',
+    iconSize: [20, 20]
+});
+var eps_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/616/616546.png',
+    iconSize: [20, 20]
+});
+var pasivos_mineros_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2547/2547847.png',
+    iconSize: [20, 20]
+});
+var prospeccion_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/8336/8336930.png',
+    iconSize: [10, 10]
+});
+var prospeccion_icon_hasta100 = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/12133/12133470.png',
+    iconSize: [10, 10]
+});
+var salud_icon = L.icon({
+    iconUrl: 'https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg',
+    iconSize: [10, 10]
+});
+var ana_ua_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/7389/7389966.png',
+    iconSize: [15, 15]
+});
+var ana_una_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/6193/6193130.png',
+    iconSize: [15, 15]
+});
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -193,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 addGeoJSONLayer(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/sectores_op.json', 
                     'sectores_op', 
-                    {color: 'blue', weight: 2}, // Estilo de los polígonos
+                    {color: 'green', weight: 2}, // Estilo de los polígonos
                     'nomdep', // Propiedad a filtrar
                     sectores, // Capa en el mapa donde se añadirá el geojson
                     selectedDept, // Departamento seleccionado
@@ -248,6 +352,187 @@ document.addEventListener('DOMContentLoaded', function() {
                     applyFilter = false,
                     'nombre',null
                 );
+                addGeoJSONLayer(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/cuenta_aporte.geojson', 
+                    'cuenta_aporte', 
+                    {color: 'orange', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
+                    'nomdep', // Propiedad a filtrar
+                    cuencas_aporte, // Capa en el mapa donde se añadirá el geojson
+                    selectedDept, // Departamento seleccionado
+                    applyFilter = false,
+                    null,null
+                );
+                addGeoJSONLayer(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/Ana_acuiferos.geojson', 
+                    'Ana_acuiferos', 
+                    {color: 'yellow', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
+                    'nomdep', // Propiedad a filtrar
+                    ana_acuiferos, // Capa en el mapa donde se añadirá el geojson
+                    selectedDept, // Departamento seleccionado
+                    applyFilter = false,
+                    null,null
+                );
+                addGeoJSONLayer(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/cuencas_transfronterizas.geojson', 
+                    'cuencas_transfronterizas', 
+                    {color: 'purple', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
+                    'nomdep', // Propiedad a filtrar
+                    cuencas_transfronterizas, // Capa en el mapa donde se añadirá el geojson
+                    selectedDept, // Departamento seleccionado
+                    applyFilter = false,
+                    null,null
+                );
+                addGeoJSONLayer(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/canales.geojson', 
+                    'canales', 
+                    {color: 'purple', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
+                    'nomdep', // Propiedad a filtrar
+                    canales, // Capa en el mapa donde se añadirá el geojson
+                    selectedDept, // Departamento seleccionado
+                    applyFilter = false,
+                    null,null
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/capta.json',
+                    captacion,'capta',
+                    capta_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de la captación</th><td>${properties.Nombre_BD}</td></tr>
+                            <tr><th>Tipo de captación</th><td>${properties.Tipo_cap}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep'
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/res.json',
+                    reservorio,'res',
+                    res_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de la EPS</th><td>${properties.NOMEPS}</td></tr>
+                            <tr><th>Estado Operativo</th><td>${properties.ESTADOOP}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep'
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/ptap.json',
+                    ptap,'ptap',
+                    ptap_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de la PTAP</th><td>${properties.NOMPTAP}</td></tr>
+                            <tr><th>Localidad</th><td>${properties.NOMLOCALID}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep'
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/ptar.json',
+                    ptar,'ptar',
+                    ptar_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de la PTAR</th><td>${properties.NOMPTAR}</td></tr>
+                            <tr><th>Localidad</th><td>${properties.NOMLOCALID}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep'
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/eps.json',
+                    eps,'eps',
+                    eps_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de la EPS</th><td>${properties.NOMEPS}</td></tr>
+                            <tr><th>Población ámbito</th><td>${properties.POBAMBEPS}</td></tr>
+                        `;
+                    },
+                    selectedDept,'NOMDEP'
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/pasivos_mineros.geojson',
+                    pasivos_mineros,'pasivos_mineros',
+                    pasivos_mineros_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Tipo</th><td>${properties.tipo}</td></tr>
+                            <tr><th>Sub tipo</th><td>${properties.subtipo}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep'
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/prospeccion_geo.geojson',
+                    prospeccion_as,'prospeccion_geo',
+                    prospeccion_icon, 
+                    null,
+                    selectedDept,'nomdep',
+                    function(properties) { // Filtro adicional
+                        return properties.AS_PPM_ADP_lab === 'Más de 100 veces el LMP'; // Solo mostrar pasivos de tipo 'Metálico'
+                    }
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/prospeccion_geo.geojson',
+                    prospeccion_as_hasta100,'prospeccion_geo',
+                    prospeccion_icon_hasta100, 
+                    null,
+                    selectedDept,'nomdep',
+                    function(properties) { // Filtro adicional
+                        return properties.AS_PPM_ADP_lab === 'Hasta 100 veces el LMP'; // Solo mostrar pasivos de tipo 'Metálico'
+                    }
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/monitoreo_ana.geojson',
+                    monitoreo_ana,'monitoreo_ana',
+                    prospeccion_icon_hasta100, 
+                    null,
+                    selectedDept,'nomdep',
+                    function(properties) { // Filtro adicional
+                        return properties.AS_PPM_ADP_lab === 'Hasta 100 veces el LMP'; // Solo mostrar pasivos de tipo 'Metálico'
+                    }
+                );
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/salud.geojson',
+                    salud,'salud',
+                    salud_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de la institución</th><td>${properties.est_nombre}</td></tr>
+                            <tr><th>Clasificación</th><td>${properties.clasificac}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nom_dpto',
+                    null
+                );  
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/Ana_pozos_ua.geojson',
+                    Ana_pozos_ua,'Ana_pozos_ua',
+                    ana_ua_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>SECTOR</th><td>${properties.SECTOR}</td></tr>
+                            <tr><th>Nombre de pozo</th><td>${properties.NOM_POZO}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep',
+                    null
+                );  
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/Ana_pozos_una.geojson',
+                    Ana_pozos_una,'Ana_pozos_una',
+                    ana_una_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Nombre de usuario</th><td>${properties.NM_USUARIO}</td></tr>
+                            <tr><th>Ubicación</th><td>${properties.UBICACION}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep',
+                    null
+                );                
             }
         });
     } else {
@@ -266,11 +551,24 @@ L.control.layers(
         "Departamento": departamento,
         "Provincia": provincia,
         "Distrito<hr><strong>Infraestructura de saneamiento:</strong>": distrito,
+        "EPS <img src='https://cdn-icons-png.flaticon.com/512/616/616546.png' width='20' height='20'>": eps,
         "Reservorio <img src='https://cdn-icons-png.flaticon.com/512/1843/1843893.png' width='20' height='20'>": reservorio,
         "Captacion <img src='https://cdn-icons-png.flaticon.com/512/5371/5371132.png' width='20' height='20'>": captacion,
         "PTAP <img src='https://cdn-icons-png.flaticon.com/512/8846/8846576.png' width='20' height='20'>": ptap,
+        "PTAR <img src='https://cdn-icons-png.flaticon.com/512/10708/10708424.png' width='20' height='20'>": ptar,
+        "Sectores Operacionales <hr><strong>Hidrografía:</strong>": sectores, 
         "Rios <img src='https://www.kingtony.com/upload/products/87D11-071A-B_v.jpg' width='20' height='20'>": rios,
-        "Sectores": sectores, "Ana - UH": ana_uh
+        "Cuencas transfronterizas":cuencas_transfronterizas,
+        "Ana - UH": ana_uh,
+        "Pozos de uso agricola <img src='https://cdn-icons-png.flaticon.com/512/7389/7389966.png' width='20' height='20'>":Ana_pozos_ua,
+        "Pozos de uso poblacional <img src='https://cdn-icons-png.flaticon.com/512/6193/6193130.png' width='20' height='20'>":Ana_pozos_una,
+        "Ana - Acuiferos":ana_acuiferos,"Canales":canales,
+        "Cuenta de Aporte<hr><strong>Información secundaria:</strong>": cuencas_aporte,
+        "Salud <img src='https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg' width='20' height='20'>":salud,
+        "Pasivos Mineros <img src='https://cdn-icons-png.flaticon.com/512/2547/2547847.png' width='20' height='20'><hr><strong>Metales pesados:</strong><br><hr><strong>INGEMENT</strong><br>":pasivos_mineros,
+        "Arsénico (Más de 100 LMP) - INGEMMET <img src='https://cdn-icons-png.flaticon.com/512/8336/8336930.png' width='20' height='20'>":prospeccion_as,"Arsénico (Hasta 100 veces LMP) - INGEMMET<img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'><hr><strong>ANA</strong><br>":prospeccion_as_hasta100,
+        "Arsénico (Hasta 100 veces LMP) - ANA <img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'>":monitoreo_ana
+        
     }
 ).addTo(map);
 
