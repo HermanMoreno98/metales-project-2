@@ -4,7 +4,8 @@
     box-sizing: border-box;
     list-style: none;
     /* color: #fff; */
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+    font-family: Georgia, 'Times New Roman', Times, serif;
     transition: .2s;
 }
 header{
@@ -14,11 +15,19 @@ header{
     max-height: 100px;
     min-height: 50px;
 }
+.header-img {
+    width: 100px; /* Ajusta el tamaño de la imagen */
+    height: auto;
+    margin-right: 15px; /* Espacio entre la imagen y el texto */
+    margin-left: 15px; /* Espacio entre la imagen y el texto */
+}
 header .title{
     width: 100%;
     background-color: #367fa9;
     text-align: center;
     align-content: center;
+    align-items: center;
+    display: flex;
 }
 header .title h1{
     font-size: 15px;
@@ -142,6 +151,54 @@ main .content{
     display: flex;
     gap: 15px;
 }
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+/* Estilo del botón de maximizar */
+.maximize-btn {
+    position: absolute;
+    top: 140px;
+    right: 25px;
+    z-index: 999; 
+    padding: 12px 15px;
+    background-color: #ffffff;
+    border: 2px solid #bfc0c4;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+/* Botón al pasar el mouse */
+.maximize-btn:hover {
+   /* transform: scale(1.1) rotateZ(180deg);*/
+    transform: rotateZ(180deg);
+}
+
+/* Estilos del mapa maximizado */
+.map-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999; /* Asegura que esté por encima de todo */
+}
+.map-fullscreen .maximize-btn{
+    top: 70px;
+    right: 10px;
+    position: absolute;
+    
+}
+@media (max-width: 990px) {
+    .map-fullscreen .maximize-btn {
+        top: 50px;
+        right: 5px;
+    }
+}
+
 main .content .map{
     width: 100%;
 }
@@ -223,7 +280,18 @@ main .content .info-content .card{
         width: 100%;
     }
     main aside .lista-click + ul, main aside .list-open + ul{
-        padding: 12px 15px;
+        padding: 1px 15px;
     }
+
+    .map-fullscreen .maximize-btn{
+        top: 170px;
+        right: 10px;
+    }
+
+    body.open-sidebar .maximize-btn {
+        top: 380px;
+        right: 25px;
+    }
+
 }
 

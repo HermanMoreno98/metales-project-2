@@ -323,6 +323,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     'SECTOR'
                 );
                 addGeoJSONLayer(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/depa.json', 
+                    'depa', 
+                    {color: 'black', weight: 2, opacity: 1, fillOpacity: 0}, // Estilo de los polígonos
+                    'nomdep', // Propiedad a filtrar
+                    departamento, // Capa en el mapa donde se añadirá el geojson
+                    selectedDept, // Departamento seleccionado
+                    applyFilter = true,
+                    null,null
+                );
+                addGeoJSONLayer(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/prov.json', 
                     'prov', 
                     {color: 'black', weight: 2, opacity: 1, fillOpacity: 0}, // Estilo de los polígonos
@@ -352,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 addGeoJSONLayer(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/Ana_uh.json', 
                     'Ana_uh', 
-                    {color: 'cyan', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
+                    {color: 'cyan', weight: 2, opacity: 0.5, fillOpacity: 0.4}, 
                     'nomdep', // Propiedad a filtrar
                     ana_uh, // Capa en el mapa donde se añadirá el geojson
                     selectedDept, // Departamento seleccionado
@@ -549,11 +559,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// Función para alternar la visibilidad del sidebar
-function toggleSidebar() {
-    var sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('collapsed');
-}
+// // Función para alternar la visibilidad del sidebar
+// function toggleSidebar() {
+//     var sidebar = document.getElementById('sidebar');
+//     sidebar.classList.toggle('collapsed');
+// }
 
 function fetchReservoirData() {
     return fetch('https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/sunass_ccpp.csv')
@@ -639,7 +649,7 @@ L.control.layers(
     {
         "Base Map": cartoDBPositron,
         "Esri": esriWorldTopoMap,
-        "Terrain": googleTerrain
+        "Terrain<hr><strong>Límites censales:</strong>": googleTerrain
     },
     {
         "Departamento": departamento,
@@ -716,8 +726,10 @@ function updateSelectOptions(selectId, options) {
     defaultOption.textContent = selectId === 'departamento' ? 'Seleccionar todos los departamentos' : `Seleccione un ${selectId}`;
     selectElement.appendChild(defaultOption);
 
-    // Ordenar opciones alfabéticamente
-    // options.sort((a, b) => a.localeCompare(b));
+    // Ordenar opciones alfabéticamente solo si hay opciones disponibles
+    if (options.length > 0) {
+        options.sort((a, b) => a.localeCompare(b));
+    }
 
     // Crear y añadir las nuevas opciones al select
     options.forEach(option => {
@@ -860,9 +872,39 @@ document.addEventListener('DOMContentLoaded', function () {
         check.classList.remove('check-list');
     });
     const btnSidebar = document.getElementById('btn');
-    btnSidebar.addEventListener('click',()=>{
-        document.body.classList.toggle('close-sidebar');
-    });
+    // btnSidebar.addEventListener('click',()=>{
+    //     document.body.classList.toggle('close-sidebar');
+    //     setTimeout(()=>{
+    //         map.invalidateSize();
+    //     },300);
+    // });
+
+    if (btnSidebar) {
+        btnSidebar.addEventListener('click', () => {
+            const body = document.body;
+            
+            // Alterna entre las clases 'open-sidebar' y 'close-sidebar'
+            if (body.classList.contains('close-sidebar')) {
+                body.classList.remove('close-sidebar');
+                body.classList.add('open-sidebar');
+                console.log('Sidebar opened.');
+            } else {
+                body.classList.remove('open-sidebar');
+                body.classList.add('close-sidebar');
+                console.log('Sidebar closed.');
+            }
+
+            // Actualiza el tamaño del mapa si es necesario
+            setTimeout(() => {
+                if (typeof map !== 'undefined') {
+                    map.invalidateSize();
+                }
+            }, 300);
+        });
+    } else {
+        console.log('Button with id "btn" not found.');
+    }
+
     const capasBtn = document.getElementById('despliegue-capas');
 
     capasBtn.addEventListener('click', ()=>{
@@ -886,6 +928,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
+const maximizeBtn = document.getElementById('maximize-btn');
+const mapContainer = document.getElementById('map-container');
+const mapElement = document.getElementById('map');
+
+let isMaximized = false;
+
+maximizeBtn.addEventListener('click', function() {
+    if (!isMaximized) {
+        // Maximizar el mapa
+        mapContainer.classList.add('map-fullscreen');
+        map.invalidateSize(); // Actualiza el tamaño del mapa para que se ajuste a pantalla completa
+        maximizeBtn.textContent = "⛶"; // Cambia el ícono del botón a minimizar
+    } else {
+        // Restaurar el mapa a su tamaño original
+        mapContainer.classList.remove('map-fullscreen');
+        map.invalidateSize(); // Ajusta nuevamente el tamaño del mapa
+        maximizeBtn.textContent = "⛶"; // Cambia el ícono del botón a maximizar
+    }
+    isMaximized = !isMaximized;
+});
 
 
 
