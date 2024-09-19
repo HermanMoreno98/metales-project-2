@@ -43,10 +43,52 @@ var monitoreo_ana = L.layerGroup();
 var salud = L.layerGroup();
 var Ana_pozos_ua = L.layerGroup();
 var Ana_pozos_una = L.layerGroup();
+var metales_laguna = L.layerGroup();
 // Crear los LayerGroups para cada categoría
 var category1Layer = L.layerGroup();
 var category2Layer = L.layerGroup();
 var category3Layer = L.layerGroup();
+
+// Funcion para limpiar las capas
+function clearAllLayers() {
+    // Arreglo con todas las capas que deseas limpiar
+    const layers = [
+        departamento,
+        provincia,
+        distrito,
+        reservorio,
+        eps,
+        captacion,
+        ptap,
+        ptar,
+        category1Layer,
+        category2Layer,
+        category3Layer,
+        sectores,
+        rios,
+        cuencas_transfronterizas,
+        ana_uh,
+        Ana_pozos_ua,
+        Ana_pozos_una,
+        ana_acuiferos,
+        canales,
+        cuencas_aporte,
+        salud,
+        pasivos_mineros,
+        prospeccion_as,
+        prospeccion_as_hasta100,
+        monitoreo_ana,
+        metales_laguna
+    ];
+
+    // Limpiar todas las capas
+    layers.forEach(layer => {
+        if (layer instanceof L.LayerGroup) {
+            layer.clearLayers(); // Limpiar capas
+        }
+    });
+}
+
 
 function addGeoJSONLayer(url, objectName, styleOptions, labelProperty, layer, selectedDept, applyFilter = false, labelPrueba = null, tooltipProperty = null) {
     fetch(url)
@@ -299,6 +341,10 @@ var rural_icon = L.icon({
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/44/44909.png',
     iconSize: [10, 10]
 });
+var laguna_icon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/128/401/401051.png',
+    iconSize: [10, 10]
+})
 
 
 
@@ -543,13 +589,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     ana_una_icon, 
                     function(properties) { // Popup content (si lo deseas)
                         return `
-                            <tr><th>Nombre de usuario</th><td>${properties.NM_USUARIO}</td></tr>
+                            <tr><th>Usuario</th><td>${properties.NM_USUARIO}</td></tr>
+                            <tr><th>Tipo de uso</th><td>${properties.TP_USO}</td></tr>
                             <tr><th>Ubicación</th><td>${properties.UBICACION}</td></tr>
                         `;
                     },
                     selectedDept,'nomdep',
                     null
-                );                
+                );  
+                addMarkersToMap(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/metales_laguna.geojson',
+                    metales_laguna,'metales_laguna',
+                    laguna_icon, 
+                    function(properties) { // Popup content (si lo deseas)
+                        return `
+                            <tr><th>Arsenico</th><td>${properties.Arsenico}</td></tr>
+                            <tr><th>Cadmio</th><td>${properties.Cadmio}</td></tr>
+                            <tr><th>Cobre</th><td>${properties.Cobre}</td></tr>
+                            <tr><th>Mercurio</th><td>${properties.Mercurio}</td></tr>
+                            <tr><th>Plomo</th><td>${properties.Plomo}</td></tr>
+                            <tr><th>Zinc</th><td>${properties.Zinc}</td></tr>
+                        `;
+                    },
+                    selectedDept,'nomdep'
+                );              
             }
         });
     } else {
@@ -589,6 +652,7 @@ function addCCPP_Caracterizacion(data) {
     category1Layer.clearLayers();
     category2Layer.clearLayers();
     category3Layer.clearLayers();
+
 
     let validMarkers = [];
 
@@ -670,6 +734,7 @@ L.control.layers(
         "Pozos de uso agricola <img src='https://cdn-icons-png.flaticon.com/512/7389/7389966.png' width='20' height='20'>":Ana_pozos_ua,
         "Pozos de uso poblacional <img src='https://cdn-icons-png.flaticon.com/512/6193/6193130.png' width='20' height='20'>":Ana_pozos_una,
         "Ana - Acuiferos":ana_acuiferos,"Canales":canales,
+        "Metales en laguna PUNO <img src='https://cdn-icons-png.flaticon.com/128/401/401051.png' width='15' height='15'>":metales_laguna,
         "Cuenta de Aporte<hr><strong>Información secundaria:</strong>": cuencas_aporte,
         "Salud <img src='https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg' width='20' height='20'>":salud,
         "Pasivos Mineros <img src='https://cdn-icons-png.flaticon.com/512/2547/2547847.png' width='20' height='20'><hr><strong>Metales pesados:</strong><br><hr><strong>INGEMENT</strong><br>":pasivos_mineros,
@@ -752,7 +817,10 @@ function resetFilters() {
     updateSelectOptions('provincia', []);
     updateSelectOptions('distrito', []);
     updateSelectOptions('ccpp', []);
-    addCCPP_Caracterizacion(reservoriosData);
+    // addCCPP_Caracterizacion(reservoriosData);
+    clearAllLayers();
+
+    map.setView([-9.19, -75.0152], 5);
 }
 
 // Event listener para el botón de resetear filtros
