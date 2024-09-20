@@ -703,6 +703,7 @@ function addCCPP_Caracterizacion(data) {
                     <tr><th>Continuidad días</th><td>${feature.conti_avenida_dias}</td></tr>
                     <tr><th>Conexiones totales de agua</th><td>${feature.Conex_tot_agua}</td></tr>
                     <tr><th>Conexiones totales de alcantarillado</th><td>${feature.Conex_tot_alca}</td></tr>
+                    <tr><th>Año de información</th><td>${feature.Anio_informacion}</td></tr>
                 </table>
             </div>`;
             
