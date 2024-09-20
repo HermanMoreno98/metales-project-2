@@ -48,6 +48,7 @@ var metales_laguna = L.layerGroup();
 var category1Layer = L.layerGroup();
 var category2Layer = L.layerGroup();
 var category3Layer = L.layerGroup();
+var unidades_proceso = L.layerGroup();
 
 // Funcion para limpiar las capas
 function clearAllLayers() {
@@ -78,7 +79,8 @@ function clearAllLayers() {
         prospeccion_as,
         prospeccion_as_hasta100,
         monitoreo_ana,
-        metales_laguna
+        metales_laguna,
+        unidades_proceso
     ];
 
     // Limpiar todas las capas
@@ -90,7 +92,7 @@ function clearAllLayers() {
 }
 
 
-function addGeoJSONLayer(url, objectName, styleOptions, labelProperty, layer, selectedDept, applyFilter = false, labelPrueba = null, tooltipProperty = null) {
+function addGeoJSONLayer(url, objectName, styleOptions, labelProperty, layer, selectedDept, applyFilter = false, labelPrueba = null, tooltipProperty = null,popupPropertyFunction=null) {
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -135,6 +137,17 @@ function addGeoJSONLayer(url, objectName, styleOptions, labelProperty, layer, se
                             className: "label-tooltip"
                         }).openTooltip();
                     }
+                                        // Añadir popup con tabla si 'popupPropertyFunction' está definido
+                    if (popupPropertyFunction) {
+                        // Generar contenido de la tabla HTML con la función proporcionada
+                        var popupHtml = `
+                            <table class='popup-table'>
+                                ${popupPropertyFunction(feature.properties)}
+                            </table>
+                        `;
+                        layer.bindPopup(popupHtml);
+                    }
+
                     if (feature.geometry && feature.geometry.type === "Point") {
                         var coords = feature.geometry.coordinates;
                         L.marker([coords[1], coords[0]]).addTo(layer);
@@ -376,7 +389,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     departamento, // Capa en el mapa donde se añadirá el geojson
                     selectedDept, // Departamento seleccionado
                     applyFilter = true,
-                    null,null
+                    null,null,
+                    function(properties) {
+                        // Generar contenido de la tabla HTML
+                        return `
+                            <tr><th>Nombre</th><td>${properties.nomdep}</td></tr>
+                        `;
+                    }
                 );
                 addGeoJSONLayer(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/prov.json', 
@@ -397,6 +416,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     selectedDept, // Departamento seleccionado
                     applyFilter = true,
                     'nomdist',null
+                );
+                addGeoJSONLayer(
+                    'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/up_adp.json', 
+                    'up_adp', 
+                    {color: 'yellow', weight: 3, opacity: 0.5, fillOpacity: 0.4}, 
+                    'nomdep', // Propiedad a filtrar
+                    unidades_proceso, // Capa en el mapa donde se añadirá el geojson
+                    selectedDept, // Departamento seleccionado
+                    applyFilter = true,
+                    'codup',null
                 );
                 addCombinedGeoJSONLayers(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/rios_nacional_1.json',
@@ -727,6 +756,7 @@ L.control.layers(
         "CCPP Rural <img src='https://cdn-icons-png.flaticon.com/512/44/44909.png' width='20' height='20'>": category1Layer,
         "CCPP Pequeña Ciudad <img src='https://cdn-icons-png.flaticon.com/512/565/565665.png' width='20' height='20'>": category2Layer,
         "CCPP Pequeña Ciudad Tipo 2 <img src='https://cdn-icons-png.flaticon.com/512/4274/4274096.png' width='20' height='20'>": category3Layer,
+        "Unidades de Proceso - ADP":unidades_proceso,
         "Sectores Operacionales <hr><strong>Hidrografía:</strong>": sectores, 
         "Rios <img src='https://www.kingtony.com/upload/products/87D11-071A-B_v.jpg' width='20' height='20'>": rios,
         "Cuencas transfronterizas":cuencas_transfronterizas,
