@@ -333,7 +333,7 @@ var prospeccion_icon_hasta100 = L.icon({
 var prospeccion_icon_hasta100_ana = L.icon({
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/12133/12133768.png',
     iconSize: [10,10]
-})
+});
 var salud_icon = L.icon({
     iconUrl: 'https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg',
     iconSize: [10, 10]
