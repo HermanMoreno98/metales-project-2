@@ -330,6 +330,10 @@ var prospeccion_icon_hasta100 = L.icon({
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/12133/12133470.png',
     iconSize: [10, 10]
 });
+var prospeccion_icon_hasta100_ana = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/12133/12133768.png',
+    iconSize: [10,10]
+})
 var salud_icon = L.icon({
     iconUrl: 'https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg',
     iconSize: [10, 10]
@@ -579,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 addMarkersToMap(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/monitoreo_ana.geojson',
                     monitoreo_ana,'monitoreo_ana',
-                    prospeccion_icon_hasta100, 
+                    prospeccion_icon_hasta100_ana, 
                     null,
                     selectedDept,'nomdep',
                     function(properties) { // Filtro adicional
@@ -770,7 +774,7 @@ L.control.layers(
         "Salud <img src='https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg' width='20' height='20'>":salud,
         "Pasivos Mineros <img src='https://cdn-icons-png.flaticon.com/512/2547/2547847.png' width='20' height='20'><hr><strong>Metales pesados:</strong><br><hr><strong>INGEMENT</strong><br>":pasivos_mineros,
         "Arsénico (Más de 100 LMP) - INGEMMET <img src='https://cdn-icons-png.flaticon.com/512/8336/8336930.png' width='20' height='20'>":prospeccion_as,"Arsénico (Hasta 100 veces LMP) - INGEMMET<img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'><hr><strong>ANA</strong><br>":prospeccion_as_hasta100,
-        "Arsénico (Hasta 100 veces LMP) - ANA <img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'>":monitoreo_ana
+        "Arsénico (Hasta 100 veces LMP) - ANA <img src='https://cdn-icons-png.flaticon.com/512/12133/12133768.png' width='20' height='20'>":monitoreo_ana
         
     }
 ).addTo(map);
