@@ -287,6 +287,55 @@ function addCombinedGeoJSONLayers(url1, url2, layer, styleOptions,o1,o2,selected
         });
 }
 
+// Colores a los poligonos de la capa (cuencas transfronterizas)
+/*
+1. "Viridis"
+Paleta perceptualmente uniforme, ideal para mapas de calor.
+Uso: chroma.scale('viridis')
+2. "Inferno"
+Paleta de colores cálidos, pasando del negro al amarillo brillante.
+Uso: chroma.scale('inferno')
+3. "Magma"
+Similar a "inferno", pero con tonos más oscuros y púrpuras.
+Uso: chroma.scale('magma')
+4. "Plasma"
+Paleta vibrante que va desde azul profundo a amarillo brillante.
+Uso: chroma.scale('plasma')
+5. "Warm"
+Una paleta de tonos cálidos que va de rojo a amarillo.
+Uso: chroma.scale('warm')
+6. "Cool"
+Una paleta de tonos fríos que va de azul a verde.
+Uso: chroma.scale('cool')
+7. "RdYlBu"
+Paleta divergente que va de rojo a azul con un centro amarillo. Ideal para mostrar desviaciones positivas y negativas.
+Uso: chroma.scale('RdYlBu')
+8. "Spectral"
+Paleta divergente que combina múltiples colores brillantes.
+Uso: chroma.scale('Spectral')
+9. "Blues"
+Escala secuencial de tonos azules.
+Uso: chroma.scale('Blues')
+10. "BuGn"
+Escala de azul a verde.
+Uso: chroma.scale('BuGn')
+11. "PuBuGn"
+Escala que combina púrpura, azul y verde.
+Uso: chroma.scale('PuBuGn')
+12. "OrRd"
+Escala de colores cálidos que va de naranja a rojo.
+Uso: chroma.scale('OrRd')
+13. "YlGnBu"
+Escala secuencial de amarillo a azul-verde.
+Uso: chroma.scale('YlGnBu')
+14. "BrBG"
+Paleta divergente de marrón a azul-verde.
+Uso: chroma.scale('BrBG')
+15. "Set1", "Set2", "Set3"
+Paletas cualitativas, con colores brillantes y variados, ideales para categorías.
+Uso: chroma.scale('Set1')
+*/
+const colorScale = chroma.scale('Spectral').domain([1, 25]); 
 
 
 function toggleGeoJSONLayer(layer) {
@@ -471,7 +520,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 addGeoJSONLayer(
                     'https://raw.githubusercontent.com/HermanMoreno98/DATA_DASH/main/Capas/cuencas_transfronterizas.geojson', 
                     'cuencas_transfronterizas', 
-                    {color: 'purple', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
+                    function(feature) {
+                        const value = feature.properties.OBJECTID; // Cambia 'someProperty' por la propiedad de tus datos
+                        const color = colorScale(value).hex(); // Generar color según el valor
+                    
+                        return {
+                            fillColor: color,
+                            fillOpacity: 0.7, // Opacidad de relleno
+                            color: "#000",    // Color del borde
+                            weight: 2         // Grosor del borde
+                        };
+                    },
+                    // {color: 'purple', weight: 1, opacity: 0.5, fillOpacity: 0.4}, 
                     'nomdep', // Propiedad a filtrar
                     cuencas_transfronterizas, // Capa en el mapa donde se añadirá el geojson
                     selectedDept, // Departamento seleccionado
@@ -642,6 +702,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             <tr><th>Mercurio</th><td>${properties.Mercurio}</td></tr>
                             <tr><th>Plomo</th><td>${properties.Plomo}</td></tr>
                             <tr><th>Zinc</th><td>${properties.Zinc}</td></tr>
+                            <tr><th>Investigación</th><td><a href="https://jpoll.ut.ac.ir/article_96586_bddd9e3fd71561768243d7006964cc91.pdf" target="_blank">Evaluation of Heavy Metal Contamination in Sediments of the Umayo Lagoon, Peru, and the Behaviour of Local Actors</a></td></tr>
+                            <tr><th>Autores</th><td>
+                                <ul>
+                                    <li>* Dante Atilio Salas-Ávila</li>
+                                    <li>* Fermin Francisco Chaiña Chura</li>
+                                    <li>* German Belizario Quispe</li>
+                                    <li>* Edgar Quispe Mamani</li>
+                                    <li>* Edgar Vidal Hurtado Chavez</li>
+                                    <li>* Felix Rojas Chahuares</li>
+                                    <li>* Wenceslao Quispe Borda</li>
+                                    <li>* Marian Alicia Hermoza Gutierrez</li>
+                                    <li>* Dante Salas Mercado</li>
+                                </ul>
+                            </td></tr>
                         `;
                     },
                     selectedDept,'nomdep'
