@@ -8,7 +8,11 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css" /> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- Dibujar -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" /> -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -64,12 +68,27 @@
             <div class="map" id="map-container">
                 <div id="map" class="leaflet-map"></div>
                 <button id="maximize-btn" class="maximize-btn">⛶</button>
+                <button id="shapefileInput" class="shapefileInput" title="Cargar shapefile en formato .zip"><i class="fa-solid fa-draw-polygon"></i></button>
+                <input type="file" id="shapefileInput_input" accept=".zip" style="display: none;" />
+                <!-- <button id="export">Exportar como Shapefile</button> -->
             </div>
 
         </div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <!-- Cargar librería para paleta de colores -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <!-- Cargar librería para activar GPS -->
+    <!-- <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script> -->
+    <!-- Cargar librería para leer shapefiles -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+    <!-- Dibujar -->
+    <!-- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://unpkg.com/mapshaper@0.5.14/dist/mapshaper.min.js"></script>
+    <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script> -->
+
     <script src="https://d3js.org/topojson.v1.min.js"></script>
     <script src="js/app.js"></script>
 </body>

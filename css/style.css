@@ -171,11 +171,31 @@ main .content{
     transition: transform 0.3s ease;
 }
 
+#shapefileInput {
+    position: absolute;
+    top: 206px;
+    right: 25px;
+    z-index: 999; 
+    padding: 12px 15px;
+    background-color: #ffffff;
+    border: 2px solid #bfc0c4;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
 /* Botón al pasar el mouse */
 .maximize-btn:hover {
    /* transform: scale(1.1) rotateZ(180deg);*/
     transform: rotateZ(180deg);
 }
+
+/* Botón al pasar el mouse */
+#shapefileInput:hover {
+    /* transform: scale(1.1) rotateZ(180deg);*/
+     transform: rotateZ(180deg);
+ }
 
 /* Estilos del mapa maximizado */
 .map-fullscreen {
@@ -192,10 +212,19 @@ main .content{
     position: absolute;
     
 }
+.map-fullscreen #shapefileInput{
+    top: 134px;
+    right: 10px;
+    position: absolute; 
+}
 @media (max-width: 990px) {
     .map-fullscreen .maximize-btn {
-        top: 50px;
-        right: 5px;
+        top: 70px;
+        right: 10px;
+    }
+    .map-fullscreen #shapefileInput{
+        top: 136px;
+        right: 10px;
     }
 }
 
@@ -283,13 +312,23 @@ main .content .info-content .card{
         padding: 1px 15px;
     }
 
-    .map-fullscreen .maximize-btn{
+    /* .map-fullscreen .maximize-btn{
         top: 170px;
         right: 10px;
-    }
+    } */
+
+    /* .map-fullscreen #shapefileInput{
+        top: 210px;
+        right: 10px;
+    } */
 
     body.open-sidebar .maximize-btn {
         top: 375px;
+        right: 25px;
+    }
+
+    body.open-sidebar #shapefileInput {
+        top: 440px;
         right: 25px;
     }
 

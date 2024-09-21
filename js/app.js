@@ -1101,11 +1101,100 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+//   // Agregar el control de localización
+// const locateControl = L.control.locate({
+//     position: 'topleft',
+//     drawCircle: true,
+//     follow: false,
+//     setView: true,
+//     keepCurrentZoomLevel: false,
+//     markerStyle: {
+//         radius: 5,
+//         color: '#03f',
+//         fillColor: '#03f',
+//         fillOpacity: 0.8
+//     },
+//     circleStyle: {
+//         color: '#03f',
+//         fillColor: '#03f',
+//         fillOpacity: 0.2
+//     },
+//     strings: {
+//         title: "Mostrar mi ubicación"
+//     }
+// }).addTo(map);
+
+// // Opcional: Manejar el evento de localización
+// map.on('locationfound', function(e) {
+//     L.marker(e.latlng).addTo(map)
+//         .bindPopup("Estás aquí").openPopup();
+//     map.setView(e.latlng, 13);
+// });
+
+// // Manejar el evento de error
+// map.on('locationerror', function(e) {
+//     alert(e.message);
+// });
+
+
+// Al hacer clic en el botón, dispara el input de archivos (shapefile)
+document.getElementById('shapefileInput').addEventListener('click', function() {
+    document.getElementById('shapefileInput_input').click();
+});
+
+// Boton para subir shapefile
+document.getElementById('shapefileInput_input').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const arrayBuffer = e.target.result;
+            
+            // Usamos shpjs para convertir el shapefile en GeoJSON
+            shp(arrayBuffer).then(function(geojson) {
+                // Añadir el GeoJSON al mapa
+                L.geoJSON(geojson).addTo(map);
+
+                // Ajustar la vista para mostrar el shapefile completo
+                map.fitBounds(L.geoJSON(geojson).getBounds());
+            }).catch(function(error) {
+                console.error('Error al leer el shapefile:', error);
+            });
+        };
+
+        // Leer el archivo como ArrayBuffer
+        reader.readAsArrayBuffer(file);
+    }
+});
+
+
+// // Inicializa Leaflet Draw
+// const drawnItems = new L.FeatureGroup();
+// map.addLayer(drawnItems);
+
+// const drawControl = new L.Control.Draw({
+//     edit: {
+//         featureGroup: drawnItems
+//     },
+//     draw: {
+//         polygon: true,
+//         polyline: false,
+//         rectangle: false,
+//         circle: false,
+//         marker: false
+//     }
+// });
+// map.addControl(drawControl);
+
+// // Evento cuando se dibuja un polígono
+// map.on(L.Draw.Event.CREATED, function (event) {
+//     const layer = event.layer;
+//     drawnItems.addLayer(layer);
+// });
 
 
 
-
-
+// Boton para expandir mapa
 const maximizeBtn = document.getElementById('maximize-btn');
 const mapContainer = document.getElementById('map-container');
 const mapElement = document.getElementById('map');
