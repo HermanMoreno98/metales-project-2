@@ -781,6 +781,9 @@ function addCCPP_Caracterizacion(data) {
                     <tr><th>Continuidad días</th><td>${feature.conti_avenida_dias}</td></tr>
                     <tr><th>Conexiones totales de agua</th><td>${feature.Conex_tot_agua}</td></tr>
                     <tr><th>Conexiones totales de alcantarillado</th><td>${feature.Conex_tot_alca}</td></tr>
+                    <tr><th>Tipo de fuente</th><td>${feature.tipo_fuente}</td></tr>
+                    <tr><th>Licencia de uso</th><td>${feature.licenciadeuso}</td></tr>
+                    <tr><th>Tipo de sistema de agua</th><td>${feature.tipo_agua}</td></tr>
                     <tr><th>Año de información</th><td>${feature.Anio_informacion}</td></tr>
                 </table>
             </div>`;
@@ -1102,40 +1105,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-//   // Agregar el control de localización
-// const locateControl = L.control.locate({
-//     position: 'topleft',
-//     drawCircle: true,
-//     follow: false,
-//     setView: true,
-//     keepCurrentZoomLevel: false,
-//     markerStyle: {
-//         radius: 5,
-//         color: '#03f',
-//         fillColor: '#03f',
-//         fillOpacity: 0.8
-//     },
-//     circleStyle: {
-//         color: '#03f',
-//         fillColor: '#03f',
-//         fillOpacity: 0.2
-//     },
-//     strings: {
-//         title: "Mostrar mi ubicación"
-//     }
-// }).addTo(map);
+  // Agregar el control de localización
+const locateControl = L.control.locate({
+    position: 'topleft',
+    drawCircle: true,
+    follow: false,
+    setView: true,
+    keepCurrentZoomLevel: false,
+    markerStyle: {
+        radius: 5,
+        color: '#03f',
+        fillColor: '#03f',
+        fillOpacity: 0.8
+    },
+    circleStyle: {
+        color: '#03f',
+        fillColor: '#03f',
+        fillOpacity: 0.2
+    },
+    strings: {
+        title: "Mostrar mi ubicación"
+    }
+}).addTo(map);
 
-// // Opcional: Manejar el evento de localización
-// map.on('locationfound', function(e) {
-//     L.marker(e.latlng).addTo(map)
-//         .bindPopup("Estás aquí").openPopup();
-//     map.setView(e.latlng, 13);
-// });
+// Opcional: Manejar el evento de localización
+map.on('locationfound', function(e) {
+    // L.marker(e.latlng).addTo(map)
+    //     .bindPopup("Estás aquí").openPopup();
+    map.setView(e.latlng, 13);
+});
 
-// // Manejar el evento de error
-// map.on('locationerror', function(e) {
-//     alert(e.message);
-// });
+// Manejar el evento de error
+map.on('locationerror', function(e) {
+    alert(e.message);
+});
 
 
 // Al hacer clic en el botón, dispara el input de archivos (shapefile)
@@ -1219,6 +1222,112 @@ maximizeBtn.addEventListener('click', function() {
 
 
 
+// BUFFER
+
+// Variables para el buffer y el punto de referencia
+var bufferLayer = null;
+var referencePoint = null;
+var referencePointGeoJSON = null;
+var enableMarking = false; // Por defecto, no se permite marcar en el mapa
+
+// Manejar clic en el checkbox para habilitar o deshabilitar la selección de punto
+document.getElementById('enableMarker').addEventListener('change', function() {
+    enableMarking = this.checked;
+  
+    // Si deshabilitamos la opción de marcar puntos, eliminamos el marcador del mapa
+    if (!enableMarking) {
+      // Eliminar el marcador del mapa
+      if (referencePoint) {
+        map.removeLayer(referencePoint);
+        referencePoint = null; // Limpiamos la variable
+        referencePointGeoJSON = null; // Limpiamos el punto GeoJSON también
+      }
+  
+      // Eliminar el buffer si existe
+      if (bufferLayer) {
+        map.removeLayer(bufferLayer);
+        bufferLayer = null; // Limpiar la variable del buffer
+      }
+    }
+  });
+
+// Manejar clic en el mapa para seleccionar el punto de referencia (solo si está habilitado)
+map.on('click', function(e) {
+  if (!enableMarking) return; // No marcar si no está habilitado
+
+  // Eliminar el marcador anterior si existe
+  if (referencePoint) {
+    map.removeLayer(referencePoint);
+  }
+
+  // Crear marcador en la posición seleccionada
+  referencePoint = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+
+  // Guardar las coordenadas como punto GeoJSON
+  referencePointGeoJSON = turf.point([e.latlng.lng, e.latlng.lat]);
+  console.log(referencePointGeoJSON)
+});
+
+function countPointsInBuffer(layer, buffer) {
+    var count = 0;
+    layer.eachLayer(function(featureLayer) {
+      // Verificar si la capa tiene latitud y longitud (para CSVs que no son GeoJSON)
+      var latLng = featureLayer.getLatLng();
+      if (latLng) {
+        var point = [latLng.lng, latLng.lat]; // Coordenadas en [longitud, latitud]
+        var turfPoint = turf.point(point); // Crear un punto de Turf.js con las coordenadas
+        if (turf.booleanPointInPolygon(turfPoint, buffer)) {
+          count++;
+        }
+      }
+    });
+    return count;
+  }
+
+// Crear el buffer y contar puntos dentro
+function createBuffer(radius,category1Layer,category2Layer,category3Layer) {
+  if (!referencePointGeoJSON) {
+    alert("Por favor selecciona un punto en el mapa.");
+    return;
+  }
+
+  // Borrar buffers anteriores
+  if (bufferLayer) {
+    map.removeLayer(bufferLayer);
+  }
+
+  // Crear buffer alrededor del punto de referencia
+  var buffer = turf.buffer(referencePointGeoJSON, radius, { units: 'meters' });
+
+  // Agregar buffer al mapa
+  bufferLayer = L.geoJSON(buffer).addTo(map);
+
+  // Contar puntos dentro del buffer
+  var countLayer1 = 0;
+  var countLayer2 = 0;
+  var countLayer3 = 0;
+  // Contar puntos en cada capa
+  countLayer1 = countPointsInBuffer(category1Layer, buffer);
+  countLayer2 = countPointsInBuffer(category2Layer, buffer);
+  countLayer3 = countPointsInBuffer(category3Layer, buffer);
+
+  alert(
+    "Puntos dentro del buffer:\n" +
+    "Rural: " + countLayer1 + " puntos\n" +
+    "Pequeña Ciudad: " + countLayer2 + " puntos\n" +
+    "Pequeña Ciudad Tipo II: " + countLayer3 + " puntos"
+  );
+}
+
+// Manejar clic en el botón para aplicar el buffer
+document.getElementById('applyBuffer').addEventListener('click', function() {
+  var radius = parseFloat(document.getElementById('radius').value);
+  if (isNaN(radius) || radius <= 0) {
+    alert("Por favor ingresa un radio válido.");
+  } else {
+    createBuffer(radius,category1Layer,category2Layer,category3Layer);
+  }
+});
 
         
 
