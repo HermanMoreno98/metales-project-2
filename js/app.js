@@ -843,11 +843,12 @@ L.control.layers(
         "Pozos de uso agricola <img src='https://cdn-icons-png.flaticon.com/512/7389/7389966.png' width='20' height='20'>":Ana_pozos_ua,
         "Pozos de uso poblacional <img src='https://cdn-icons-png.flaticon.com/512/6193/6193130.png' width='20' height='20'>":Ana_pozos_una,
         "Ana - Acuiferos":ana_acuiferos,"Canales":canales,
-        "Metales en laguna PUNO <img src='https://cdn-icons-png.flaticon.com/128/401/401051.png' width='15' height='15'>":metales_laguna,
         "Cuenta de Aporte<hr><strong>Información secundaria:</strong>": cuencas_aporte,
         "Salud <img src='https://as2.ftcdn.net/v2/jpg/00/96/48/11/1000_F_96481179_ANEpnLLHZZxtIezAh5k3tTKHO3VaFqjF.jpg' width='20' height='20'>":salud,
         "Pasivos Mineros <img src='https://cdn-icons-png.flaticon.com/512/2547/2547847.png' width='20' height='20'><hr><strong>Metales pesados:</strong><br><hr><strong>INGEMENT</strong><br>":pasivos_mineros,
-        "Arsénico (Más de 100 LMP) - INGEMMET <img src='https://cdn-icons-png.flaticon.com/512/8336/8336930.png' width='20' height='20'>":prospeccion_as,"Arsénico (Hasta 100 veces LMP) - INGEMMET<img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'><hr><strong>ANA</strong><br>":prospeccion_as_hasta100,
+        "Arsénico (Más de 100 LMP) - INGEMMET <img src='https://cdn-icons-png.flaticon.com/512/8336/8336930.png' width='20' height='20'>":prospeccion_as,
+        "Estudios Laguna Umayo <img src='https://cdn-icons-png.flaticon.com/128/401/401051.png' width='15' height='15'>":metales_laguna,
+        "Arsénico (Hasta 100 veces LMP) - INGEMMET<img src='https://cdn-icons-png.flaticon.com/512/12133/12133470.png' width='20' height='20'><hr><strong>ANA</strong><br>":prospeccion_as_hasta100,
         "Arsénico (Hasta 100 veces LMP) - ANA <img src='https://cdn-icons-png.flaticon.com/512/12133/12133768.png' width='20' height='20'>":monitoreo_ana
         
     }
